@@ -2,6 +2,7 @@ package Services;
 
 import java.util.ArrayList;
 
+import DAO.OfferDAO;
 import DAO.ProductDAO;
 import Objects.Offer;
 import Objects.Product;
@@ -34,11 +35,45 @@ public class ProductServices {
 
 	}
 	
+	public ArrayList<Product> getAllProduct(){
+		ProductDAO u = new ProductDAO();
+		
+		return u.getAllProducts();
+		
+	}
+	
 	
 	public Product getProductbyID(int i){
 		ProductDAO u = new ProductDAO();
 		
 		return u.getProductbyID(i);
+		
+	}
+	
+	public void DeleteProducts(int tab[]){
+		ProductDAO p = new ProductDAO();
+		OfferDAO o = new OfferDAO();
+		
+		for (int i : tab){
+			o.DeleteOfferByBarcode(i);
+			
+		
+		}
+		for (int i : tab){
+			p.DeleteProduct(i);
+			
+		
+		}
+		
+	}
+	
+	public void DeleteProduct(int id){
+		ProductDAO p = new ProductDAO();
+		OfferDAO o = new OfferDAO();
+		
+		o.DeleteOfferByBarcode(id);
+			p.DeleteProduct(id);
+		
 		
 	}
 }

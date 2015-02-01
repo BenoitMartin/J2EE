@@ -21,5 +21,10 @@ public class UserServices {
                throw new Exception("Utilisateur inconnu");
    }
 
+	 public boolean isAdmin(int id){
+		 uDAO = new UserDAO();
+		 User u = uDAO.getUserbyID(id);
+		 return u.isAdmin();
+	 }
 	
 }

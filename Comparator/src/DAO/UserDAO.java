@@ -8,22 +8,24 @@ import java.sql.SQLException;
 
 import Objects.User;
 
-public class UserDAO {
+public class UserDAO extends DBConnection {
 
-	
 	public User getUserbyID(int id) {
 		User u = null;
-		
+
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class not found");
 		}
 		try {
-			Connection connexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/comparator", "root", "root");
+			this.initConnection();
+			Connection connexion = DriverManager.getConnection(this.getUrl_(),
+					this.getUser_(), this.getPass_());
 			String sqlQuery = "SELECT * FROM Users where id=?";
-			PreparedStatement state = connexion.prepareStatement(sqlQuery);
+			PreparedStatement state;
+
+			state = connexion.prepareStatement(sqlQuery);
 			state.setInt(1, id);
 			ResultSet rs = state.executeQuery();
 
@@ -33,26 +35,25 @@ public class UserDAO {
 				boolean isAdmin = rs.getBoolean("isAdmin");
 				u = new User(id, login, password, isAdmin);
 			}
-			state.close();
-			connexion.close();
-
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			this.closeAll();
 		}
 		return u;
 	}
-	
 
 	public User getUserbyName(String name) {
 		User u = null;
+		this.initConnection();
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class not found");
 		}
-		try {
-			Connection connexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/comparator", "root", "root");
+		try (Connection connexion = DriverManager.getConnection(this.getUrl_(),
+				this.getUser_(), this.getPass_())) {
 			String sqlQuery = "SELECT * FROM Users where login=?";
 			PreparedStatement state = connexion.prepareStatement(sqlQuery);
 			state.setString(1, name);
@@ -64,11 +65,11 @@ public class UserDAO {
 				boolean isAdmin = rs.getBoolean("isAdmin");
 				u = new User(id, name, password, isAdmin);
 			}
-			state.close();
-			connexion.close();
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		} finally {
+			this.closeAll();
 		}
 		return u;
 	}

@@ -12,18 +12,15 @@ import javax.persistence.Table;
 
 public class Offer {
 
-	@Column(name="idRetailer",
-            table="Link")
+	@Column(name="idRetailer")
 	@Id
 	@ManyToOne()
 	private Retailer retailer;
 
-	@Column(name="price",
-            table="Link")
+	@Column(name="price")
 	private float price;
 	
-	@Column(name="Product",
-            table="Link")
+	@Column(name="Product")
 	@ManyToOne
 	private Product produit;
 	

@@ -90,7 +90,7 @@ public class User {
 	}
 	
 	public String toString(){
-		return "Id : "+this.id+"\n Login : "+this.login+"\n Password : "+this.password+"\n isAdmin"+this.isAdmin;
+		return "Id : "+this.id+"\nLogin : "+this.login+"\nPassword : "+this.password+"\nisAdmin : "+this.isAdmin;
 		
 	}
 	

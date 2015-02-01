@@ -9,9 +9,11 @@ import java.util.ArrayList;
 
 import Objects.Offer;
 
-public class OfferDAO {
+public class OfferDAO extends DBConnection {
 
 	public ArrayList<Offer> getOffersbybarcode(int id) {
+		this.initConnection();
+
 		Offer o = null;
 		ArrayList<Offer> OfferList = new ArrayList<Offer>();
 		try {
@@ -19,9 +21,8 @@ public class OfferDAO {
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class not found");
 		}
-		try {
-			Connection connexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/comparator", "root", "root");
+		try (Connection connexion = DriverManager.getConnection(this.getUrl_(),
+				this.getUser_(), this.getPass_())) {
 			String sqlQuery = "SELECT * FROM Link where barcode=?";
 			PreparedStatement state = connexion.prepareStatement(sqlQuery);
 			state.setInt(1, id);
@@ -34,26 +35,27 @@ public class OfferDAO {
 				o = new Offer(r.getRetailerbyID(idRetailer),price);
 				OfferList.add(o);
 			}
-			state.close();
-			connexion.close();
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		} finally {
+			this.closeAll();
 		}
 		return OfferList;
 	}
 	
 	
 	public Offer getOffersbyKey(int barcode, int idRet) {
+		this.initConnection();
+
 		Offer o = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			System.out.println("Class not found");
 		}
-		try {
-			Connection connexion = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/comparator", "root", "root");
+		try (Connection connexion = DriverManager.getConnection(this.getUrl_(),
+				this.getUser_(), this.getPass_())) {
 			String sqlQuery = "SELECT * FROM Link where barcode=? and idRetailer=?";
 			PreparedStatement state = connexion.prepareStatement(sqlQuery);
 			state.setInt(1, barcode);
@@ -65,15 +67,63 @@ public class OfferDAO {
 				RetailerDAO r = new RetailerDAO();
 				o = new Offer(r.getRetailerbyID(idRet),price);
 			}
-			state.close();
-			connexion.close();
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		} finally {
+			this.closeAll();
 		}
 		return o;
 	}
 	
 
+	public void DeleteOfferByBarcode(int id){
+		this.initConnection();
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class not found");
+		}
+		try (Connection connexion = DriverManager.getConnection(this.getUrl_(),
+				this.getUser_(), this.getPass_())) {
+			String sqlQuery = "delete FROM Link where barcode=?";
+			PreparedStatement state = connexion.prepareStatement(sqlQuery);
+			state.setInt(1, id);
+			state.executeUpdate();
+			this.closeAll();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			this.closeAll();
+		}
+		
+	}
+	
+	public void DeleteOfferByRetailerID(int id){
+		this.initConnection();
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class not found");
+		}
+		try (Connection connexion = DriverManager.getConnection(this.getUrl_(),
+				this.getUser_(), this.getPass_())) {
+			String sqlQuery = "delete FROM Link where idRetailer=?";
+			PreparedStatement state = connexion.prepareStatement(sqlQuery);
+			state.setInt(1, id);
+			state.executeUpdate();
+			this.closeAll();
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			this.closeAll();
+		}
+		
+	}
+	
 	
 }
